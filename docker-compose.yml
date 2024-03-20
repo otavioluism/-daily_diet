@@ -1,0 +1,17 @@
+version: '3'
+services:
+  db:
+    image: mysql:latest
+    container_name: mysql-db-snack
+    restart: always
+    environment:
+      MYSQL_USER: 'admin'
+      MYSQL_PASSWORD: 'admin123'
+      MYSQL_DATABASE: 'flask-crud-snack'
+      MYSQL_ROOT_PASSWORD: 'admin123'
+    ports:
+      - "3307:3306"
+    expose:
+      - '3306'
+    volumes:
+      - ~/Desktop/User/Estudos/Python/Rocketseat/Desenvolvimento_avancado_flask/mysql:/var/lib/mysql
