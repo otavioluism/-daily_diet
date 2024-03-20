@@ -13,17 +13,31 @@ def create_snack():
   data = request.json
 
   name = data.get('name')
-  description = data.get('description')
   diet = data.get('diet')
+  description = data.get('description')
 
   snack = Snack(name=name, description=description, timestamp=datetime.today().date(), diet=diet)
 
   if snack: 
     db.session.add(snack)
     db.session.commit()
-    return jsonify(data)
+    return jsonify(data), 201
   
-  return 'Error on server', 500
+  return jsonify({'message': 'Dados inválidos!'}), 400
+
+@app.route('/snack/<int:user_id>', methods=['PUT'])
+def edit_snack(user_id: int): 
+  data = request.json
+  snack = Snack.query.get(user_id)
+
+  if snack:
+    snack.description = data.get('description')
+    snack.timestamp = datetime.today().date()
+    snack.diet = data.get('diet')
+    db.session.commit()
+    return jsonify({'message': 'Atualizado dados!'})
+  
+  return jsonify({'message': 'Refeição não encontrada'}), 404 
 
 if __name__ == '__main__':
   app.run(debug=True)
