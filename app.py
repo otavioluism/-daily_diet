@@ -37,7 +37,39 @@ def edit_snack(user_id: int):
     db.session.commit()
     return jsonify({'message': 'Atualizado dados!'})
   
-  return jsonify({'message': 'Refeição não encontrada'}), 404 
+  return jsonify({'message': 'Refeição não encontrada!'}), 404 
+
+@app.route('/snack/<int:user_id>', methods=['DELETE'])
+def delete_snack(user_id: int): 
+  snack = Snack.query.get(user_id)
+
+  if snack: 
+    db.session.delete(snack)
+    db.session.commit()
+    return jsonify({'message': 'Refeição deletada com sucesso!'})
+  
+  return jsonify({'message': 'Refeição não encontrada!'}), 404
+
+@app.route('/snack')
+def list_users(): 
+  list_users = []
+  name_params = request.args.get('name')
+
+  users = Snack.query.filter_by(name=name_params).all()
+
+  if users: 
+    for user in users:
+      list_users.append({
+        'name': user.name, 
+        'description': user.description, 
+        'diet': False if user.diet == 0 else True 
+      })
+
+    return jsonify({'Refeições': list_users})
+
+
+  return jsonify({'message': f'Não existe nenhuma refeição para o usuário {name_params}!'})
+
 
 if __name__ == '__main__':
   app.run(debug=True)
