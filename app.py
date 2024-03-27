@@ -68,7 +68,17 @@ def list_users():
     return jsonify({'Refeições': list_users})
 
 
-  return jsonify({'message': f'Não existe nenhuma refeição para o usuário {name_params}!'})
+  return jsonify({'message': f'Não existe nenhuma refeição para o usuário {name_params}!'}), 404
+
+@app.route('/snack/list')
+def list_snack():
+  name_params = request.args.get('name')
+  user = Snack.query.filter_by(name=name_params).first()
+
+  if user: 
+    return jsonify({'name': user.name, 'description': user.description, 'diet': False if user.diet == 0 else True})
+
+  return jsonify({'message': f'Não existe nenhuma refeição {name_params}!'}), 404
 
 
 if __name__ == '__main__':
